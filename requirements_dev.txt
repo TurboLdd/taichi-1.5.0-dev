@@ -1,0 +1,18 @@
+cmake
+colorama
+coverage
+Pillow
+pybind11
+GitPython
+yapf
+distro
+isort
+pylint
+requests==2.26
+twine
+wheel
+astunparse
+pre-commit
+scikit-build
+numpy
+ninja; platform_system != 'Windows'
