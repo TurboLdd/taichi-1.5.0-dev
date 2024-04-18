@@ -1032,7 +1032,7 @@ class MeshForStmt : public Stmt {
   }
 
   std::unique_ptr<Stmt> clone() const override;
-
+//should be the low level
   TI_STMT_DEF_FIELDS(mesh,
                      is_bit_vectorized,
                      num_cpu_threads,
@@ -1908,9 +1908,11 @@ class MeshRelationAccessStmt : public Stmt {
 
   mesh::MeshElementType from_type() const {
     if (auto idx = mesh_idx->cast<LoopIndexStmt>()) {
+      std::cout<<"from type fun 1st"<<std::endl;
       TI_ASSERT(idx->is_mesh_index());
       return idx->mesh_index_type();
     } else if (auto idx = mesh_idx->cast<MeshRelationAccessStmt>()) {
+      std::cout<<"from type fun 2st"<<std::endl;
       TI_ASSERT(!idx->is_size());
       return idx->to_type;
     } else {

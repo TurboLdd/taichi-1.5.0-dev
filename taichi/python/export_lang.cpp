@@ -1325,6 +1325,7 @@ void export_lang(py::module &m) {
   py::enum_<mesh::MeshTopology>(m, "MeshTopology", py::arithmetic())
       .value("Triangle", mesh::MeshTopology::Triangle)
       .value("Tetrahedron", mesh::MeshTopology::Tetrahedron)
+      .value("Hexahedron", mesh::MeshTopology::Hexahedron)
       .export_values();
 
   py::enum_<mesh::MeshElementType>(m, "MeshElementType", py::arithmetic())

@@ -61,6 +61,8 @@ class ReplaceIndexConversion : public BasicStmtVisitor {
 void demote_mesh_statements_offload(OffloadedStmt *offload,
                                     const CompileConfig &config,
                                     const std::string &kernel_name) {
+ 
+  std::cout<<"in demote_mesh_statements_offload"<<std::endl;
   ReplaceIndexConversion rep_conv(
       offload);  // This demote should work for any offloaed statement
 
@@ -80,21 +82,54 @@ void demote_mesh_statements_offload(OffloadedStmt *offload,
     auto to_order = mesh::element_order(stmt->to_type);
     mesh::MeshRelationType rel_type =
         mesh::relation_by_orders(from_order, to_order);
+        std::cout<<"rel_type: "<<int(rel_type)<<" "<<std::endl;
+        std::cout<<"from_order: "<<from_order<<" "<<std::endl;
+        std::cout<<"to_order: "<<to_order<<" "<<std::endl;//
     if (from_order > to_order) {  // high-to-low relation
       if (stmt->is_size()) {
-        stmt->replace_with(Stmt::make<ConstStmt>(
-            TypedConstant{from_type == mesh::MeshElementType::Cell &&
-                                  stmt->to_type == mesh::MeshElementType::Edge
-                              ? /*Cell-Edge=*/6
-                              : (from_order + 1)}));
+        //std::cout<<"in stmt"<<std::endl;
+        if (from_type == mesh::MeshElementType::Cell && stmt->to_type == mesh::MeshElementType::Edge){
+          stmt->replace_with(Stmt::make<ConstStmt>(TypedConstant{13}));
+        }
+        else{
+            if (from_type == mesh::MeshElementType::Cell)
+            {stmt->replace_with(Stmt::make<ConstStmt>(TypedConstant{(from_order+1)}));}
+            else if (from_type == mesh::MeshElementType::Face)
+            {stmt->replace_with(Stmt::make<ConstStmt>(TypedConstant{(from_order+1)}));}
+            else if (from_type == mesh::MeshElementType::Edge)
+            {stmt->replace_with(Stmt::make<ConstStmt>(TypedConstant{(from_order+1)}));}
+            else if (from_type == mesh::MeshElementType::Vertex) 
+            {stmt->replace_with(Stmt::make<ConstStmt>(TypedConstant{(from_order+1)}));}
+        }//查找引用
+        //stmt->replace_with(Stmt::make<ConstStmt>(
+            //TypedConstant{from_type == mesh::MeshElementType::Cell &&
+                                  //stmt->to_type == mesh::MeshElementType::Edge
+                              //? /*Cell-Edge=*/6
+                              //: (from_order + 1)}));
+                              
       } else {
         SNode *rel_value = stmt->mesh->relations.find(rel_type)->second.value;
         VecStatement block;
-        Stmt *to_size = block.push_back<ConstStmt>(
-            TypedConstant{from_type == mesh::MeshElementType::Cell &&
-                                  stmt->to_type == mesh::MeshElementType::Edge
-                              ? /*Cell-Edge=*/6
-                              : (from_order + 1)});
+        Stmt *to_size;
+        
+       if (from_type == mesh::MeshElementType::Cell && stmt->to_type == mesh::MeshElementType::Edge){
+          to_size=block.push_back<ConstStmt>((TypedConstant{13}));
+        }
+        else{
+            if (from_type == mesh::MeshElementType::Cell)
+            {to_size=block.push_back<ConstStmt>((TypedConstant{from_order+1}));}
+            else if (from_type == mesh::MeshElementType::Face)
+            {to_size=block.push_back<ConstStmt>((TypedConstant{from_order+1}));}
+            else if (from_type == mesh::MeshElementType::Edge)
+            {to_size=block.push_back<ConstStmt>((TypedConstant{from_order+1}));}
+            else if (from_type == mesh::MeshElementType::Vertex) 
+            {to_size=block.push_back<ConstStmt>((TypedConstant{from_order+1}));}
+        }
+        //Stmt *to_size = block.push_back<ConstStmt>(
+            //TypedConstant{from_type == mesh::MeshElementType::Cell &&
+                                  //stmt->to_type == mesh::MeshElementType::Edge
+                              //? /*Cell-Edge=*/6
+                              //: (from_order + 1)});
         // E.g, v_2 = CV[(c + total_cells_offset) * 4 + 2]
         Stmt *offset = offload->total_offset_local.find(from_type)->second;
         Stmt *tmp0 = block.push_back<BinaryOpStmt>(BinaryOpType::add, offset,
@@ -107,6 +142,7 @@ void demote_mesh_statements_offload(OffloadedStmt *offload,
         stmt->replace_with(std::move(block));
       }
     } else {  // low-to-high or same-order
+    std::cout<<"in low-to-high or same-order"<<std::endl;
       const auto &rel = stmt->mesh->relations.find(rel_type)->second;
       SNode *rel_offset = rel.offset;
       SNode *rel_patch_offset = rel.patch_offset;
@@ -120,6 +156,7 @@ void demote_mesh_statements_offload(OffloadedStmt *offload,
                                                   index_offset, stmt->mesh_idx);
       Stmt *offset = get_load(rel_offset, index, block);
       if (stmt->is_size()) {
+        std::cout<<"in stmt"<<std::endl;
         Stmt *one = block.push_back<ConstStmt>(TypedConstant{1});
         Stmt *index_1 =
             block.push_back<BinaryOpStmt>(BinaryOpType::add, index, one);
@@ -152,10 +189,12 @@ void demote_mesh_statements(IRNode *root,
     for (auto &offload : root_block->statements) {
       demote_mesh_statements_offload(offload->cast<OffloadedStmt>(), config,
                                      args.kernel_name);
+    std::cout<<"offload"<<std::endl;
     }
   } else {
     demote_mesh_statements_offload(root->as<OffloadedStmt>(), config,
                                    args.kernel_name);
+      std::cout<<"root"<<std::endl;
   }
   type_check(root, config);
 }

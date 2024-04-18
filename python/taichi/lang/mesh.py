@@ -382,6 +382,8 @@ class MeshMetadata:
 
         for element in data["elements"]:
             element_type = MeshElementType(element["order"])
+            if element["order"] !=0 and element["order"] !=1 and element["order"] !=3 and element["order"] !=7:
+                continue
             self.num_elements[element_type] = element["num"]
             self.max_num_per_patch[element_type] = element["max_num_per_patch"]
 
@@ -418,6 +420,12 @@ class MeshMetadata:
 
         for element in data["elements"]:
             element_type = MeshElementType(element["order"])
+            
+            if (element_type!= MeshElementType.Edge)and\
+		            (element_type!= MeshElementType.Vertex)and\
+		            (element_type!= MeshElementType.Face)and\
+		            (element_type!= MeshElementType.Cell):
+                continue
             self.element_fields[element_type]["owned"].from_numpy(
                 np.array(element["owned_offsets"]))
             self.element_fields[element_type]["total"].from_numpy(
@@ -495,6 +503,7 @@ class MeshBuilder:
                                        metadata.element_fields[element]["g2r"])
 
         for rel_type in metadata.relation_fields:
+            
             from_order = metadata.relation_fields[rel_type]["from_order"]
             to_order = metadata.relation_fields[rel_type]["to_order"]
             if from_order <= to_order:
@@ -557,6 +566,7 @@ class Mesh:
                                        metadata.element_fields[element]["g2r"])
 
         for rel_type in metadata.relation_fields:
+            
             from_order = metadata.relation_fields[rel_type]["from_order"]
             to_order = metadata.relation_fields[rel_type]["to_order"]
             if from_order <= to_order:
@@ -595,6 +605,13 @@ def _TriMesh():
 
 def _TetMesh():
     """(Deprecated) Create a tetrahedron mesh (a set of vert/edge/face/cell elements, attributes, and connectivity) builder.
+
+    Returns:
+        An instance of mesh builder.
+    """
+    return MeshBuilder()
+def _HexMesh():
+    """(Deprecated) Create a hexa mesh (a set of vert/edge/face/cell elements, attributes, and connectivity) builder.
 
     Returns:
         An instance of mesh builder.

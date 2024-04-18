@@ -249,6 +249,7 @@ void offload_to_executable(IRNode *ir,
   }
 
   if (is_extension_supported(config.arch, Extension::mesh)) {
+    //*******
     irpass::demote_mesh_statements(ir, config, {kernel->get_name()});
     print("Demote mesh statements");
   }

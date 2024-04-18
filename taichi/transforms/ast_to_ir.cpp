@@ -24,6 +24,7 @@ void ast_to_ir(const CompileConfig &config,
     verbose = false;
 
   if (to_executable) {
+    std::cout << "AST -> IR...\n";
     irpass::compile_to_executable(
         kernel.ir.get(), config, &kernel,
         /*autodiff_mode=*/kernel.autodiff_mode,

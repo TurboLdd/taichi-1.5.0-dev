@@ -43,12 +43,14 @@ class GatherMeshforRelationTypes : public BasicStmtVisitor {
                   mesh::element_type_name(_type));
     }
 
-    std::set<mesh::MeshRelationType> all_relations;
+    std::set<mesh::MeshRelationType> all_relations;//通过mesh_for查询所有的relation，存储在all_relations中
     for (auto _type : mesh_for->major_to_types) {
+      std::cout<<"_type in allrelation major: "<<int(_type)<<std::endl;
       all_relations.insert(
           mesh::relation_by_orders(int(mesh_for->major_from_type), int(_type)));
     }
     for (auto _type : mesh_for->minor_relation_types) {
+      std::cout<<"_type in allrelation minor: "<<int(_type)<<std::endl;
       all_relations.insert(_type);
     }
 
@@ -91,6 +93,7 @@ class GatherMeshforRelationTypes : public BasicStmtVisitor {
             stmt->mesh_idx->cast<LoopIndexStmt>()) {  // major relation
       TI_ASSERT(from_stmt->mesh_index_type() == mesh_for->major_from_type);
       mesh_for->major_to_types.insert(stmt->to_type);
+      std::cout<<"stmt->to_type in visit: "<<int(stmt->to_type)<<std::endl;
     } else if (auto from_stmt =
                    stmt->mesh_idx
                        ->cast<MeshRelationAccessStmt>()) {  // minor relation

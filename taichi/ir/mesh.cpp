@@ -39,15 +39,18 @@ int element_order(MeshElementType type) {
 }
 
 int from_end_element_order(MeshRelationType rel) {
-  return int(rel) >> 0x2;
+  //return int(rel) >> 0x2;
+  return int(int(rel)/10);
 }
 
 int to_end_element_order(MeshRelationType rel) {
-  return int(rel) & 0x3;
+  //return int(rel) & 0x3;
+  return int(int(rel)%10);
 }
 
 MeshRelationType relation_by_orders(int from_order, int to_order) {
-  return MeshRelationType((from_order << 2) | to_order);
+  //return MeshRelationType((from_order << 2) | to_order);
+  return MeshRelationType(from_order*10 + to_order);
 }
 
 MeshRelationType inverse_relation(MeshRelationType rel) {

@@ -14,13 +14,14 @@ class Stmt;
 
 namespace mesh {
 
-enum class MeshTopology { Triangle = 3, Tetrahedron = 4 };
+enum class MeshTopology { Triangle = 3, Tetrahedron = 4 ,Hexahedron=8};
 
-enum class MeshElementType { Vertex = 0, Edge = 1, Face = 2, Cell = 3 };
+enum class MeshElementType { Vertex = 0, Edge = 1, Face = 3, Cell = 7 };//diffC
 
 std::string element_type_name(MeshElementType type);
 
 enum class MeshRelationType {
+  /*
   VV = 0,
   VE = 1,
   VF = 2,
@@ -36,7 +37,23 @@ enum class MeshRelationType {
   CV = 12,
   CE = 13,
   CF = 14,
-  CC = 15,
+  CC = 15,*/
+  VV = 0,
+  VE = 1,
+  VF = 3,
+  VC = 7,
+  EV = 10,
+  EE = 11,
+  EF = 13,
+  EC = 17,
+  FV = 30,
+  FE = 31,
+  FF = 33,
+  FC = 37,
+  CV = 70,
+  CE = 71,
+  CF = 73,
+  CC = 77,
 };
 
 std::string relation_type_name(MeshRelationType type);
