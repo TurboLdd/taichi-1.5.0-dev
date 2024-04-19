@@ -577,7 +577,7 @@ class Mesh:
             else:
                 instance.set_relation_fixed(
                     rel_type, metadata.relation_fields[rel_type]["value"])
-
+                #set_relation_fix,三个参数：meshptr,relationtype,value
         instance._vert_position = metadata.attrs["x"]
         instance.patcher = metadata.patcher
 
