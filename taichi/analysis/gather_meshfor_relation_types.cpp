@@ -58,6 +58,7 @@ class GatherMeshforRelationTypes : public BasicStmtVisitor {
     std::string full_name;
     std::string short_name;
     for (auto _type : all_relations) {
+      std::cout<<"_type:"<<int(_type)<<std::endl;
       if (mesh_for->mesh->relations.find(_type) ==
           mesh_for->mesh->relations.end()) {
         if (missing) {
