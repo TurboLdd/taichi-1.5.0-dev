@@ -1908,11 +1908,11 @@ class MeshRelationAccessStmt : public Stmt {
 
   mesh::MeshElementType from_type() const {
     if (auto idx = mesh_idx->cast<LoopIndexStmt>()) {
-      std::cout<<"from type fun 1st"<<std::endl;
+      
       TI_ASSERT(idx->is_mesh_index());
       return idx->mesh_index_type();
     } else if (auto idx = mesh_idx->cast<MeshRelationAccessStmt>()) {
-      std::cout<<"from type fun 2st"<<std::endl;
+      
       TI_ASSERT(!idx->is_size());
       return idx->to_type;
     } else {

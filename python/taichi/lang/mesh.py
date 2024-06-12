@@ -405,6 +405,10 @@ class MeshMetadata:
         for relation in data["relations"]:
             from_order = relation["from_order"]
             to_order = relation["to_order"]
+            if from_order !=0 or from_order != 1 or from_order != 3 or from_order != 7:
+                continue
+            if to_order !=0 or to_order != 1 or to_order != 3 or to_order != 7:
+                continue
             rel_type = MeshRelationType(
                 relation_by_orders(from_order, to_order))
             self.relation_fields[rel_type] = {}
@@ -420,7 +424,8 @@ class MeshMetadata:
 
         for element in data["elements"]:
             element_type = MeshElementType(element["order"])
-            
+            if element["order"] !=0 and element["order"] !=1 and element["order"] !=3 and element["order"] !=7:
+                continue
             if (element_type!= MeshElementType.Edge)and\
 		            (element_type!= MeshElementType.Vertex)and\
 		            (element_type!= MeshElementType.Face)and\
@@ -440,6 +445,10 @@ class MeshMetadata:
         for relation in data["relations"]:
             from_order = relation["from_order"]
             to_order = relation["to_order"]
+            if from_order !=0 or from_order != 1 or from_order != 3 or from_order != 7:
+                continue
+            if to_order !=0 or to_order != 1 or to_order != 3 or to_order != 7:
+                continue
             rel_type = MeshRelationType(
                 relation_by_orders(from_order, to_order))
             self.relation_fields[rel_type]["value"].from_numpy(
@@ -506,6 +515,10 @@ class MeshBuilder:
             
             from_order = metadata.relation_fields[rel_type]["from_order"]
             to_order = metadata.relation_fields[rel_type]["to_order"]
+            if from_order !=0 or from_order != 1 or from_order != 3 or from_order != 7:
+                continue
+            if to_order !=0 or to_order != 1 or to_order != 3 or to_order != 7:
+                continue
             if from_order <= to_order:
                 instance.set_relation_dynamic(
                     rel_type, metadata.relation_fields[rel_type]["value"],
@@ -569,6 +582,11 @@ class Mesh:
             
             from_order = metadata.relation_fields[rel_type]["from_order"]
             to_order = metadata.relation_fields[rel_type]["to_order"]
+            '''
+            if from_order !=0 or from_order != 1 or from_order != 3 or from_order != 7:
+                continue
+            if to_order !=0 or to_order != 1 or to_order != 3 or to_order != 7:
+                continue'''
             if from_order <= to_order:
                 instance.set_relation_dynamic(
                     rel_type, metadata.relation_fields[rel_type]["value"],
@@ -577,7 +595,7 @@ class Mesh:
             else:
                 instance.set_relation_fixed(
                     rel_type, metadata.relation_fields[rel_type]["value"])
-
+                #set_relation_fix,三个参数：meshptr,relationtype,value
         instance._vert_position = metadata.attrs["x"]
         instance.patcher = metadata.patcher
 
